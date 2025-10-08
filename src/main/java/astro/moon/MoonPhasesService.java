@@ -123,7 +123,7 @@ public class MoonPhasesService {
         } else if (normalizedMoonPhaseDegrees < 157.5) {
             return MoonPhase.WAXING_GIBBOUS;
         } else if (normalizedMoonPhaseDegrees < 202.5) {
-            return MoonPhase.FULL;
+            return MoonPhase.FULL_MOON;
         } else if (normalizedMoonPhaseDegrees < 247.5) {
             return MoonPhase.WANING_GIBBOUS;
         } else if (normalizedMoonPhaseDegrees < 292.5) {

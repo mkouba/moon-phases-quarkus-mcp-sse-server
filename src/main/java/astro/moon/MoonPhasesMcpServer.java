@@ -15,38 +15,23 @@
  */
 package astro.moon;
 
-import io.quarkiverse.mcp.server.TextContent;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
-import io.quarkiverse.mcp.server.ToolResponse;
 import jakarta.inject.Inject;
-
-import java.time.DateTimeException;
-import java.time.LocalDate;
+import jakarta.validation.Valid;
 
 public class MoonPhasesMcpServer {
 
     @Inject
     MoonPhasesService moonPhasesService;
 
-    @Tool(name = "current-moon-phase",
-        description = "Provides the current moon phase")
-    public TextContent currentMoonPhase() {
-        return new TextContent(moonPhasesService.currentMoonPhase().toString());
+    @Tool(name = "current-moon-phase", description = "Provides the current moon phase")
+    public MoonPhase currentMoonPhase() {
+        return moonPhasesService.currentMoonPhase();
     }
 
-    @Tool(name = "moon-phase-at-date",
-        description = "Provides the moon phase at a certain date (with a format of yyyy-MM-dd)")
-    public ToolResponse moonPhaseAtDate(
-        @ToolArg(name = "localDate",
-            description = "The date for which the user wants to know the phase of the moon (in yyyy-MM-dd format)")
-        String localDate) {
-        try {
-            LocalDate parsedLocalDate = LocalDate.parse(localDate);
-            MoonPhase moonPhase = moonPhasesService.moonPhaseAtUnixTimestamp(parsedLocalDate.toEpochDay() * 86400);
-            return ToolResponse.success(new TextContent(moonPhase.toString()));
-        } catch (DateTimeException dte) {
-            return ToolResponse.error("Not a valid date (yyyy-MM-dd): " + localDate);
-        }
+    @Tool(name = "moon-phase-at-date", description = "Provides the moon phase at a certain date (with a format of yyyy-MM-dd)")
+    public MoonPhase moonPhaseAtDate(@Valid MoonPhaseRequest moonPhaseRequest) {
+        return moonPhasesService.moonPhaseAtUnixTimestamp(moonPhaseRequest.date().toEpochDay() * 86400);
     }
 }
